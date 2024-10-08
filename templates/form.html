@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property Form</title>
+</head>
+
+<body>
+    <h1>Property Form</h1>
+    <form action="{{ url_for('submit') }}" method="post">
+
+        <label for="spi_wstPropertyID">Property ID:</label>
+        <input type="text" id="spi_wstPropertyID" name="spi_wstPropertyID" required><br><br>
+
+        <label for="spi_wstPropertyNameTX">Property Name:</label>
+        <input type="text" id="spi_wstPropertyNameTX" name="spi_wstPropertyNameTX" required><br><br>
+
+        <label for="spi_triCountryCodeTX">Country Code:</label>
+        <input type="text" id="spi_triCountryCodeTX" name="spi_triCountryCodeTX" required><br><br>
+
+        <label for="spi_triCountryTX">Country:</label>
+        <input type="text" id="spi_triCountryTX" name="spi_triCountryTX" required><br><br>
+
+        <label for="spi_triName">Name:</label>
+        <input type="text" id="spi_triName" name="spi_triName" required><br><br>
+
+        <label for="spi_triIdTX">ID:</label>
+        <input type="text" id="spi_triIdTX" name="spi_triIdTX" required><br><br>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+</body>
+
+</html>
