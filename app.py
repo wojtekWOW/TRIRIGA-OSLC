@@ -1,5 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
-import os
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 import requests
 
 app = Flask(__name__)
@@ -11,7 +10,37 @@ resource = '/oslc/so/PropIntegrationRecordCF'
 
 @app.route('/')
 def index():
-    return render_template('form.html')
+    if 'logged_in' in session:
+        return render_template('form.html')
+    else:
+        return redirect(url_for('login'))
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        # Here you should validate the username and password
+        # For simplicity, we assume any non-empty username and password are valid
+        if username and password:
+            session['logged_in'] = True
+            session['username'] = username
+            session['password'] = password
+            flash('Login successful')
+            return redirect(url_for('index'))
+        else:
+            flash('Invalid credentials')
+
+    return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('logged_in', None)
+    session.pop('username', None)
+    session.pop('password', None)
+    flash('You have been logged out')
+    return redirect(url_for('login'))
 
 @app.route('/submit', methods=['POST'])
 def submit():
@@ -24,12 +53,12 @@ def submit():
     spi_triName = request.form['spi_triName']
     spi_triIdTX = request.form['spi_triIdTX']
 
-    # Retrieve credentials from environment variables
-    username = os.getenv('TRIRIGA_API_USERNAME')
-    password = os.getenv('TRIRIGA_API_PASSWORD')
+    # Retrieve credentials from session
+    username = session.get('username')
+    password = session.get('password')
 
     if username is None or password is None:
-        flash("API credentials are not set in environment variables")
+        flash("API credentials are not set in session")
         return redirect(url_for('index'))
 
     # Create payload
